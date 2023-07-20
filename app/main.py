@@ -44,34 +44,36 @@ class DataProvider:
         self, amount_of_groups: None | int = None, amount_of_humans: None | int = None
     ) -> T_HUMANS:
         amount_of_groups = amount_of_groups or random.randint(5, 10)
-        amount_of_humans = amount_of_humans or random.randint(3, 30)
+        amount_of_humans = amount_of_humans or random.randint(10, 100)
 
         _groups = self._generate_group_names(amount=amount_of_groups)
         return self._generate_humans(groups=_groups, amount_of_humans=amount_of_humans)
 
 
 def organize_data(humans: T_HUMANS):
-    """
-    Organize data in way, useful for further processing.
-    At this stage not allowed to make output string.
-    """
-    ...
+    group_sorted = {}
+
+    for human in humans:
+        group_sorted.setdefault(human["group"], []).append(human["name"])
+
+    return group_sorted
 
 
 def get_formatted_output(data) -> str:
-    """
-    Get output string. That can be used to print in console.
-    """
-    ...
+    output_data: list[str] = []
+    for group in data:
+        output_data.extend(
+            f"name group is {group} and ones has {len(data[group])} "
+            f"and names of thous people are {', '.join(data[group])}\n"
+        )
+    return "".join(output_data)
 
 
 def main():
-    """
-    You have a list of humans. Every human have "name" and "group".
-    Your task is to show all groups, with amount and names of members of each group.
-    """
+
     group_members = DataProvider().generate_group_members()
     organized_data = organize_data(humans=group_members)
+    # print(organized_data)
     output = get_formatted_output(data=organized_data)
     print(output)
 
